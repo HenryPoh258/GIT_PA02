@@ -15,11 +15,16 @@ public class Player : MonoBehaviour
 
     private float moveSpeed = 0.05f;
 
+    public GameObject explosion;
+
+    private GameManager gm;
+
     void Start()
     {
         thisController = GetComponent<CharacterController>();
         thisAnimator = GetComponentInChildren<Animator>();
         playerMesh = transform.GetChild(0);
+        gm = FindObjectOfType<GameManager>();
     }
 
     void Update()
@@ -54,4 +59,19 @@ public class Player : MonoBehaviour
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -1.5f, 1.5f), transform.position.y, transform.position.z);
     }
 
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag.Equals("Obstacle"))
+        {
+            gm.TakeDamage(1);
+            GameObject Explosion = Instantiate(explosion, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
+            Destroy(Explosion, 1);
+        }
+
+        if (other.gameObject.tag.Equals("Points"))
+        {
+            gm.AddScore(1);
+        }
+    }
 }
+
